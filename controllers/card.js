@@ -4,17 +4,23 @@ const Card = require('../models/card');
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-module.exports.likeCard = (req, res) => Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-  { new: true },
-)
+module.exports.likeCard = (req, res) => {
+  console.log(req.user.userId);
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user.userId } }, // добавить _id в массив, если его там нет
+    { new: true },)
+  .then(card => res.send({ data: card }))
+  .catch(() => res.status(500).send({ message: 'Произошла ошибка' }
+));};
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params.cardId,
-  { $pull: { likes: req.user._id } }, // убрать _id из массива
-  { new: true },
-)
+  { $pull: { likes: req.user.userId } }, // убрать _id из массива
+  { new: true },)
+  .then(card => res.send({ data: card }))
+  .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+;
 
 module.exports.getCard = (req, res) => { // получаем карточку/ки?
   Card.find({})
@@ -22,13 +28,6 @@ module.exports.getCard = (req, res) => { // получаем карточку/к
       .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.patchCard = (req, res) => { // обновляем пользователя/ имя / автар / и т.д.
-  Card.findByIdAndUpdate(req.params.id, { name: 'Виктор Гусев' })
-    .then(card => res.send({ data: card }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
-};
-
-///
 module.exports.postCard = (req, res) => { // добавляем карточку
   const {name, link} = req.body;
   Card.create({name: name, link: link, owner: req.user.userId})
