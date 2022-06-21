@@ -36,7 +36,8 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
         return res.status(ERROR_CODE).send({ message: `Пользователь по указанному ${req.params.userId} не найден.` });
       }
       else {
-        return res.send({ data: card })
+        ERROR_CODE = 200;
+        return res.status(ERROR_CODE).send({ data: card })
       }})
       .catch((err) => {
         /*if (err.name === 'CastError') {
