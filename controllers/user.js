@@ -40,14 +40,8 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
         return res.status(ERROR_CODE).send({ data: user })
       }})
       .catch((err) => {
-        /*if (err.name === 'CastError') {
-          ERROR_CODE = 400;
-          return res.status(ERROR_CODE).send({ message:  });
-        }
-        else {*/
-          ERROR_CODE = 400;
-          return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
-        //}
+        ERROR_CODE = 500;
+        return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
       }
       );
 };
@@ -84,7 +78,9 @@ module.exports.patchUserAvatar = (req, res) => { // обновляем поль�
   User.findByIdAndUpdate(
     req.user.userId,
     { avatar: avatar })
-    .then(user => res.send({ data: user }))
+    .then((user) => {
+      user.avatar = avatar;
+      res.send({ data: user })})
     .catch((err) => {
       if (err.name === 'ValidationError') {
         ERROR_CODE = 400;
