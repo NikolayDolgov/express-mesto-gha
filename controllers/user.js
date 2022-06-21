@@ -32,7 +32,7 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
   User.findById(req.params.userId)
       .then((user) => {
       if(user == null){
-        ERROR_CODE = 404;
+        ERROR_CODE = 400;//
         return res.status(ERROR_CODE).send({ message: `Пользователь по указанному ${req.params.userId} не найден.` });
       }
       else {
