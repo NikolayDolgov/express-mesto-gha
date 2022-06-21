@@ -30,15 +30,22 @@ module.exports.postUser = (req, res) => { // добавляем пользова
 
 module.exports.getUserId = (req, res) => { // получаем пользователя
   User.findById(req.params.userId)
-      .then(user => res.send({ data: user }))
+      .then((user) => {
+      if(user == null){
+        ERROR_CODE = 404;
+        return res.status(ERROR_CODE).send({ message: `Пользователь по указанному ${req.params.userId} не найден.` });
+      }
+      else {
+        return res.send({ data: card })
+      }})
       .catch((err) => {
-        if (err.name === 'CastError') {
-          ERROR_CODE = 404;
-          return res.status(ERROR_CODE).send({ message: `Пользователь по указанному ${req.params.userId} не найден.` });
+        /*if (err.name === 'CastError') {
+          ERROR_CODE = 400;
+          return res.status(ERROR_CODE).send({ message:  });
         }
-        else {
+        else {*/
           return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
-        }
+        //}
       }
       );
 };
