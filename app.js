@@ -28,6 +28,10 @@ module.exports.createCard = (req, res) => {
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 
+app.use((req, res, next) => {
+  res.status(404).send("Страница не найдена")
+})
+
 app.listen(PORT, () => {
     // Если всё работает, консоль покажет, какой порт приложение слушает
     console.log(`App listening on port ${PORT}`)

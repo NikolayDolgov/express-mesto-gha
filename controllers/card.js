@@ -81,10 +81,17 @@ module.exports.postCard = (req, res) => { // добавляем карточку
 
 module.exports.deleteCard = (req, res) => { // удаляем карточку
   Card.findByIdAndRemove(req.params.cardId)
-    .then(user => res.send({ data: user}))
+    .then((card) =>{
+      if(card == null){
+      ERROR_CODE = 404;
+      return res.status(ERROR_CODE).send({ message: `Передан несуществующий ${req.params.cardId} карточки.` });
+    }
+    else {
+      return res.send({ data: card })
+    }})
     .catch((err) => {
       if (err.name === 'CastError') {
-        ERROR_CODE = 404;
+        ERROR_CODE = 400;
         return res.status(ERROR_CODE).send({ message: `Карточка с указанным ${req.params.cardId} не найдена.` });
       }
       else {
