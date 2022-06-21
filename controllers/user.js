@@ -37,7 +37,7 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
       }
       else {
         ERROR_CODE = 200;
-        return res.status(ERROR_CODE).send({ data: card })
+        return res.status(ERROR_CODE).send({ data: user })
       }})
       .catch((err) => {
         /*if (err.name === 'CastError') {
@@ -45,6 +45,7 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
           return res.status(ERROR_CODE).send({ message:  });
         }
         else {*/
+          ERROR_CODE = 400;
           return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
         //}
       }
