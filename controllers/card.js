@@ -12,7 +12,7 @@ module.exports.likeCard = (req, res) => {
     { new: true },)
     .then((card) => {
       if(card == null){
-        ERROR_CODE = 400;
+        ERROR_CODE = 404;
         return res.status(ERROR_CODE).send({ message: `Передан несуществующий ${req.params.cardId} карточки.` });
       }
       else {
@@ -21,7 +21,7 @@ module.exports.likeCard = (req, res) => {
       })
     .catch((err) => {
       if (err.name === 'CastError') {
-        ERROR_CODE = 404;
+        ERROR_CODE = 400;
         return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для снятия лайка' });
       }
       else {
@@ -37,7 +37,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },)
   .then((card) => {
     if(card == null){
-      ERROR_CODE = 400;
+      ERROR_CODE = 404;
       return res.status(ERROR_CODE).send({ message: `Передан несуществующий ${req.params.cardId} карточки.` });
     }
     else {
@@ -46,7 +46,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
     )
   .catch((err) => {
     if (err.name === 'CastError') {
-      ERROR_CODE = 404;
+      ERROR_CODE = 400;
       return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для снятия лайка' });
     }
     else {
