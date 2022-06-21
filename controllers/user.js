@@ -40,9 +40,14 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
         return res.status(ERROR_CODE).send({ data: user })
       }})
       .catch((err) => {
-        ERROR_CODE = 500;
-        return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
-      }
+        if (err.name === 'CastError') {
+          ERROR_CODE = 404;
+          return res.status(ERROR_CODE).send({ message: 'Передан некорректный _id' });
+        }
+        else {
+          ERROR_CODE = 500;
+          return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+        }}
       );
 };
 
