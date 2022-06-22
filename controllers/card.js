@@ -55,7 +55,7 @@ module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   }
   );
 
-module.exports.getCard = (req, res) => { // получаем карточки?
+module.exports.getCard = (req, res) => { // получаем карточки
   Card.find({})
       .then(card => res.send({ data: card }))
       .catch((err) => {
