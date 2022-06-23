@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const { ERROR_CODE, ERROR_CODE_UNDEFINED, ERROR_CODE_INCORRECT } = require('../utils/utils');
-// подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb');
 
 module.exports.getUser = (req, res) => { // получаем пользователей
   User.find({})
@@ -52,7 +49,12 @@ module.exports.patchUser = (req, res) => { // обновляем пользов�
       // upsert: true // если пользователь не найден, он будет создан
     },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      // eslint-disable-next-line no-param-reassign
+      user.name = name;
+      // eslint-disable-next-line no-param-reassign
+      user.about = about;
+      res.send({ data: user })})
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные при обновлении профиля.' });

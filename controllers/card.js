@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { ERROR_CODE, ERROR_CODE_UNDEFINED, ERROR_CODE_INCORRECT } = require('../utils/utils');
-// подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb');
 
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
