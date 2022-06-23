@@ -54,7 +54,8 @@ module.exports.patchUser = (req, res) => { // обновляем пользов�
       user.name = name;
       // eslint-disable-next-line no-param-reassign
       user.about = about;
-      res.send({ data: user })})
+      res.send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
