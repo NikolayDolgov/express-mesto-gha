@@ -4,7 +4,7 @@ const { ERROR_CODE, ERROR_CODE_UNDEFINED, ERROR_CODE_INCORRECT } = require('../u
 module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params._id,
-    { $addToSet: { likes: req.user.userId } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
     .then((card) => {
@@ -25,7 +25,7 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
   req.params._id,
-  { $pull: { likes: req.user.userId } }, // убрать _id из массива
+  { $pull: { likes: req.user._id } }, // убрать _id из массива
   { new: true },
 )
   .then((card) => {
@@ -51,7 +51,7 @@ module.exports.getCard = (req, res) => { // получаем карточки
 
 module.exports.postCard = (req, res) => { // добавляем карточку
   const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user.userId })
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {

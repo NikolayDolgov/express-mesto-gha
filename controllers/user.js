@@ -21,10 +21,10 @@ module.exports.postUser = (req, res) => { // добавляем пользова
 };
 
 module.exports.getUserId = (req, res) => { // получаем пользователя
-  User.findById(req.params.userId)
+  User.findById(req.params._id)
     .then((user) => {
       if (user == null) {
-        return res.status(ERROR_CODE_UNDEFINED).send({ message: `Пользователь по указанному ${req.params.userId} не найден.` });
+        return res.status(ERROR_CODE_UNDEFINED).send({ message: `Пользователь по указанному ${req.params._id} не найден.` });
       }
 
       return res.send({ data: user });
@@ -41,7 +41,7 @@ module.exports.getUserId = (req, res) => { // получаем пользова�
 module.exports.patchUser = (req, res) => { // обновляем пользователя кроме аватара
   const { name, about } = req.body;
   User.findByIdAndUpdate(
-    req.user.userId,
+    req.user._id,
     { name, about },
     {
       new: true, // обработчик then получит на вход обновлённую запись
@@ -62,7 +62,7 @@ module.exports.patchUser = (req, res) => { // обновляем пользов�
       }
       if (err.name === 'CastError') {
         // изменено с 404 на 400 текст был Пользователь по указанному ${req.user.userId} не найден.
-        return res.status(ERROR_CODE_INCORRECT).send({ message: `Передан некорректный ${req.user.userId}.` });
+        return res.status(ERROR_CODE_INCORRECT).send({ message: `Передан некорректный ${req.user._id}.` });
       }
 
       return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
@@ -72,7 +72,7 @@ module.exports.patchUser = (req, res) => { // обновляем пользов�
 module.exports.patchUserAvatar = (req, res) => { // обновляем пользователя/ имя / автар / и т.д.
   const { avatar } = req.body;
   User.findByIdAndUpdate(
-    req.user.userId,
+    req.user._id,
     { avatar },
   )
     .then((user) => {
@@ -86,7 +86,7 @@ module.exports.patchUserAvatar = (req, res) => { // обновляем поль�
       }
       if (err.name === 'CastError') {
         // изменено с 404 на 400 текст был Пользователь по указанному ${req.user.userId} не найден.
-        return res.status(ERROR_CODE_INCORRECT).send({ message: `Передан некорректный ${req.user.userId}.` });
+        return res.status(ERROR_CODE_INCORRECT).send({ message: `Передан некорректный ${req.user._id}.` });
       }
 
       return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
