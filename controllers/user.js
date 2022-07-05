@@ -116,7 +116,7 @@ module.exports.login = (req, res) => { // авторизация
     .catch(() => res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' }));
 };
 
-module.exports.createUser = (req, res) => { // добавляем пользователя
+module.exports.createUser = (req, res) => { // добавляем пользователя /signup
   const {
     name, about, avatar, email,
   } = req.body;
@@ -126,7 +126,13 @@ module.exports.createUser = (req, res) => { // добавляем пользов
       User.create({
         name, about, avatar, email, password,
       })
-        .then((user) => res.send({ data: user }));
+        .then((user) => res.send({ data: user }))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+          }
+          return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+        });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
