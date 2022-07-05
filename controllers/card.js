@@ -63,7 +63,7 @@ module.exports.postCard = (req, res) => { // добавляем карточку
 };
 
 module.exports.deleteCard = (req, res) => { // удаляем карточку
-  Card.findByIdAndRemove(req.params._id)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
         return res.status(ERROR_CODE_UNDEFINED).send({ message: `Передан несуществующий ${req.params._id} карточки.` });
