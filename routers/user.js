@@ -14,12 +14,16 @@ router.get('/users/:userId', celebrate({
 }), getUserId);
 
 router.patch('/users/me', celebrate({
-  name: Joi.string().min(2).max(30),
-  about: Joi.string().min(2).max(30),
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  }),
 }), patchUser);
 
 router.patch('/users/me/avatar', celebrate({
-  avatar: Joi.string(),
+  body: Joi.object().keys({
+    avatar: Joi.string(),
+  }),
 }), patchUserAvatar);
 
 module.exports = router;

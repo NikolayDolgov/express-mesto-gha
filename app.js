@@ -16,16 +16,20 @@ app.use(bodyParser.json());
 
 // подключаем роуты
 app.get('/signin', celebrate({
-  email: Joi.string().required().email(),
-  password: Joi.string().required(),
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
 }), login);
 
 app.post('/signup', celebrate({
-  email: Joi.string().required().email(),
-  password: Joi.string().required(),
-  name: Joi.string().min(2).max(30),
-  about: Joi.string().min(2).max(30),
-  avatar: Joi.string(),
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string(),
+  }),
 }), createUser);
 
 // авторизация
