@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { celebrate, Joi, errors } = require('celebrate');
 const usersRouter = require('./routers/user'); // импорт роутера пользователей
 const cardsRouter = require('./routers/card'); // импорт роутера карточек
 const { login, createUser } = require('./controllers/user');
@@ -14,8 +15,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 
 // подключаем роуты
-app.get('/signin', login);
-app.post('/signup', createUser);
+app.get('/signin', celebrate({
+  email: Joi.string().required().email(),
+  password: Joi.string().required(),
+}), login);
+
+app.post('/signup', celebrate({
+  email: Joi.string().required().email(),
+  password: Joi.string().required(),
+  name: Joi.string().min(2).max(30),
+  about: Joi.string().min(2).max(30),
+  avatar: Joi.string(),
+}), createUser);
 
 // авторизация
 app.use(auth);
@@ -26,6 +37,8 @@ app.use('/', cardsRouter);
 app.use((req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
+
+app.use(errors()); // обработчик ошибок celebrate
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
