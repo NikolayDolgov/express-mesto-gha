@@ -1,7 +1,9 @@
 const Card = require('../models/card');
-const { ERROR_CODE, ERROR_CODE_UNDEFINED, ERROR_CODE_INCORRECT } = require('../utils/utils');
+const IncorrectError = require('../errors/IncorrectError');
+const UndefinedError = require('../errors/UndefinedError');
+const DefaultError = require('../errors/DefaultError');
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params._id,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -9,73 +11,73 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card == null) {
-        return res.status(ERROR_CODE_UNDEFINED).send({ message: `Передан несуществующий ${req.params._id} карточки.` });
+        next(new IncorrectError(`Передан несуществующий ${req.params._id} карточки.`));
       }
 
       return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные для снятия лайка' });
+        next(new IncorrectError('Переданы некорректные данные для постановки лайка'));
       }
 
-      return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+      next(new DefaultError());
     });
 };
 
-module.exports.dislikeCard = (req, res) => Card.findByIdAndUpdate(
+module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params._id,
   { $pull: { likes: req.user._id } }, // убрать _id из массива
   { new: true },
 )
   .then((card) => {
     if (card == null) {
-      return res.status(ERROR_CODE_UNDEFINED).send({ message: `Передан несуществующий ${req.params._id} карточки.` });
+      next(new UndefinedError(`Передан несуществующий ${req.params._id} карточки.`));
     }
 
     return res.send({ data: card });
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные для снятия лайка' });
+      next(new IncorrectError('Переданы некорректные данные для снятия лайка'));
     }
 
-    return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+    next(new DefaultError());
   });
 
-module.exports.getCard = (req, res) => { // получаем карточки
+module.exports.getCard = (req, res, next) => { // получаем карточки
   Card.find({})
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' }));
+    .catch(next(new DefaultError()));
 };
 
-module.exports.postCard = (req, res) => { // добавляем карточку
+module.exports.postCard = (req, res, next) => { // добавляем карточку
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE_INCORRECT).send({ message: 'Переданы некорректные данные при создании карточки.' });
+        next(new IncorrectError('Переданы некорректные данные при создании карточки.'));
       }
 
-      return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+      next(new DefaultError());
     });
 };
 
-module.exports.deleteCard = (req, res) => { // удаляем карточку
+module.exports.deleteCard = (req, res, next) => { // удаляем карточку
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        return res.status(ERROR_CODE_UNDEFINED).send({ message: `Передан несуществующий ${req.params._id} карточки.` });
+        next(new UndefinedError(`Передан несуществующий ${req.params._id} карточки.`));
       }
 
       return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_CODE_INCORRECT).send({ message: `Карточка с указанным ${req.params._id} не найдена.` });
+        next(new IncorrectError(`Карточка с указанным ${req.params._id} не найдена.`));
       }
 
-      return res.status(ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+      next(new DefaultError());
     });
 };
