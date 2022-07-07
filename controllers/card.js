@@ -26,13 +26,13 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
-  req.params._id,
+  req.params.cardId,
   { $pull: { likes: req.user._id } }, // убрать _id из массива
   { new: true },
 )
   .then((card) => {
     if (card == null) {
-      next(new UndefinedError(`Передан несуществующий ${req.params._id} карточки.`));
+      next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
     }
 
     return res.send({ data: card });
@@ -68,14 +68,14 @@ module.exports.deleteCard = (req, res, next) => { // удаляем карточ
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        next(new UndefinedError(`Передан несуществующий ${req.params._id} карточки.`));
+        next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
 
       return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new IncorrectError(`Карточка с указанным ${req.params._id} не найдена.`));
+        next(new IncorrectError(`Карточка с указанным ${req.params.cardId} не найдена.`));
       }
 
       next(new DefaultError());
