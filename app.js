@@ -7,6 +7,7 @@ const cardsRouter = require('./routers/card'); // импорт роутера к
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const { regex } = require('./utils/utils');
+const UndefinedError = require('./errors/UndefinedError');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -36,11 +37,11 @@ app.post('/signup', celebrate({
 // авторизация
 app.use(auth);
 
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' }); // тесты не пропускают 404 / 401
+app.use((req, res, next) => {
+  next(new UndefinedError('Страница не найдена'));
 });
 
 app.use(errors()); // обработчик ошибок celebrate

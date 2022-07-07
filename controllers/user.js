@@ -31,16 +31,17 @@ module.exports.getUserId = (req, res, next) => { // получаем польз�
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        next(new UndefinedError(`Пользователь по указанному ${req.params.userId} не найден.`));
+        throw next(new UndefinedError(`Пользователь по указанному ${req.params.userId} не найден.`));
       }
 
       return res.send({
         data: user,
       });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new IncorrectError('Передан некорректный _id'));
+        return next(new IncorrectError('Передан некорректный _id'));
       }
 
       next(new DefaultError());
@@ -65,13 +66,13 @@ module.exports.patchUser = (req, res, next) => { // обновляем поль�
       user.about = about;
       return res.send({ data: user });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectError('Переданы некорректные данные при обновлении профиля.'));
+        return next(new IncorrectError('Переданы некорректные данные при обновлении профиля.'));
       }
       if (err.name === 'CastError') {
-        // изменено с 404 на 400 текст был Пользователь по указанному ${req.user.userId} не найден.
-        next(new IncorrectError(`Передан некорректный ${req.user._id}.`));
+        return next(new IncorrectError(`Передан некорректный ${req.user._id}.`));
       }
 
       next(new DefaultError());
@@ -89,13 +90,14 @@ module.exports.patchUserAvatar = (req, res, next) => { // обновляем п�
       user.avatar = avatar;
       return res.send({ data: user });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectError('Переданы некорректные данные при обновлении профиля.'));
+        return next(new IncorrectError('Переданы некорректные данные при обновлении профиля.'));
       }
       if (err.name === 'CastError') {
         // изменено с 404 на 400 текст был Пользователь по указанному ${req.user.userId} не найден.
-        next(new IncorrectError(`Передан некорректный ${req.user._id}.`));
+        return next(new IncorrectError(`Передан некорректный ${req.user._id}.`));
       }
 
       next(new DefaultError());
@@ -146,19 +148,21 @@ module.exports.createUser = (req, res, next) => { // добавляем поль
             _id: user._id,
           },
         }))
+        // eslint-disable-next-line consistent-return
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new IncorrectError('Переданы некорректные данные при создании пользователя.'));
+            return next(new IncorrectError('Переданы некорректные данные при создании пользователя.'));
           }
           if (err.code === 11000) {
-            next(new UniqueError(`Указанный вами ${email} уже занят другим пользователем.`));
+            return next(new UniqueError(`Указанный вами ${email} уже занят другим пользователем.`));
           }
           next(new DefaultError());
         });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectError('Переданы некорректные данные при создании пользователя.'));
+        return next(new IncorrectError('Переданы некорректные данные при создании пользователя.'));
       }
 
       next(new DefaultError());

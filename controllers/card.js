@@ -12,14 +12,15 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card == null) {
-        next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
+        throw next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
 
       return res.send({ data: card });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new IncorrectError('Переданы некорректные данные для постановки лайка'));
+        return next(new IncorrectError('Переданы некорректные данные для постановки лайка'));
       }
 
       next(new DefaultError());
@@ -33,14 +34,15 @@ module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
 )
   .then((card) => {
     if (card == null) {
-      next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
+      return next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
     }
 
     return res.send({ data: card });
   })
+  // eslint-disable-next-line consistent-return
   .catch((err) => {
     if (err.name === 'CastError') {
-      next(new IncorrectError('Переданы некорректные данные для снятия лайка'));
+      return next(new IncorrectError('Переданы некорректные данные для снятия лайка'));
     }
 
     next(new DefaultError());
@@ -56,9 +58,10 @@ module.exports.postCard = (req, res, next) => { // добавляем карто
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new IncorrectError('Переданы некорректные данные при создании карточки.'));
+        return next(new IncorrectError('Переданы некорректные данные при создании карточки.'));
       }
 
       next(new DefaultError());
