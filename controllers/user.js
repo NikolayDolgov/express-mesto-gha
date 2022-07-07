@@ -15,8 +15,16 @@ module.exports.getUserAll = (req, res, next) => { // получаем польз
 
 module.exports.getUser = (req, res, next) => { // получаем пользователя // доделать
   User.findById(req.user._id)
-    .then((user) => res.send({ data: user }))
-    .catch(next(new DefaultError()));
+    .then((user) => res.send({
+      data: {
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      },
+    }))
+    .catch(next);
 };
 
 module.exports.getUserId = (req, res, next) => { // получаем пользователя
