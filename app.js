@@ -7,6 +7,9 @@ const cardsRouter = require('./routers/card'); // импорт роутера к
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 
+// eslint-disable-next-line no-useless-escape
+const regex = /http[s]?:\/\/[w{3}]?[a-zA-Z0-9-]+\.[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]+#?/;
+
 const app = express();
 const { PORT = 3000 } = process.env;
 
@@ -28,7 +31,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(regex),
   }),
 }), createUser);
 
