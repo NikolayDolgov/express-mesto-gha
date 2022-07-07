@@ -53,7 +53,7 @@ module.exports.patchUser = (req, res, next) => { // обновляем поль�
       user.name = name;
       // eslint-disable-next-line no-param-reassign
       user.about = about;
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -77,7 +77,7 @@ module.exports.patchUserAvatar = (req, res, next) => { // обновляем п�
     .then((user) => {
       // eslint-disable-next-line no-param-reassign
       user.avatar = avatar;
-      res.send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -99,22 +99,22 @@ module.exports.login = (req, res, next) => { // авторизация
     email,
   }).select('+password')
     .then((user) => {
-      if (user == null) {
-        next(new AuthentificationError('Неправильный логин или пароль'));
+      if (user === null) {
+        throw new AuthentificationError('Неправильный логин или пароль');
       }
       newUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then((pass) => {
       if (!pass) {
-        next(new AuthentificationError('Неправильный логин или пароль'));
+        throw new AuthentificationError('Неправильный логин или пароль');
       }
 
       // создадим токен
       const token = jwt.sign({ _id: newUser._id }, 'some-secret-key', { expiresIn: '7d' });
       return res.send({ token });
     })
-    .catch(next(new DefaultError()));
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => { // добавляем пользователя /signup
