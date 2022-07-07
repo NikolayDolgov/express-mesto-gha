@@ -31,7 +31,7 @@ module.exports.getUserId = (req, res, next) => { // получаем польз�
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        throw next(new UndefinedError(`Пользователь по указанному ${req.params.userId} не найден.`));
+        throw new UndefinedError(`Пользователь по указанному ${req.params.userId} не найден.`);
       }
 
       return res.send({
@@ -43,8 +43,7 @@ module.exports.getUserId = (req, res, next) => { // получаем польз�
       if (err.name === 'CastError') {
         return next(new IncorrectError('Передан некорректный _id'));
       }
-
-      next(new DefaultError());
+      next();
     });
 };
 

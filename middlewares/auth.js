@@ -5,7 +5,7 @@ const AuthentificationError = require('../errors/AuthentificationError');
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw next(new AuthentificationError('Токена нет в заголовке'));
+    throw new AuthentificationError('Токена нет в заголовке');
   } else {
     const token = authorization.replace('Bearer ', '');
     let payload;
