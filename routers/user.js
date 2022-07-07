@@ -6,7 +6,8 @@ const {
 
 // const regex = /[https?:\\/\\/][w{3}.]?[a-zA-Z0-9\\\-._~:/?#\\[\\]@!\$&'()*+,;=]+[#]?/;
 // const regex = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\\/]))?/;
-const regex = /(http:\/\/|https:\/\/)[w{3}.]?([a-zA-Z0-9-#.]+)/;
+// eslint-disable-next-line no-useless-escape
+const regex = /(http:\/\/|https:\/\/)[w{3}.]?([a-zA-Z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+\#?)/;
 
 router.get('/users', getUserAll);
 router.get('/users/me', getUser);
