@@ -12,7 +12,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card == null) {
-        throw new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`);
+        return next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
 
       return res.send({ data: card });
@@ -72,7 +72,7 @@ module.exports.deleteCard = (req, res, next) => { // удаляем карточ
   Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        throw new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`);
+        return next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(req.params.cardId)
