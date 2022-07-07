@@ -6,8 +6,7 @@ const {
 
 // const regex = /[https?:\\/\\/][w{3}.]?[a-zA-Z0-9\\\-._~:/?#\\[\\]@!\$&'()*+,;=]+[#]?/;
 // const regex = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\\/]))?/;
-// const regex = /(http|https):\/\/[w{3}.]?[a-zA-Z0-9-]+\.^\s{2,}/;
-const regex = /(https?:\/\/)([www.]?[a-zA-Z0-9-]+\.)([^\s]{2,})/;
+const regex = /(http:\/\/|https:\/\/)([www.]?)([a-zA-Z0-9-\.\_\~\:\/\?\#]+)/;
 
 router.get('/users', getUserAll);
 router.get('/users/me', getUser);
@@ -27,7 +26,7 @@ router.patch('/users/me', celebrate({
 
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().pattern(regex),
+    avatar: Joi.string().pattern(regex).required(),
   }),
 }), patchUserAvatar);
 
