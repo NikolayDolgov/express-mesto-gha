@@ -34,7 +34,15 @@ module.exports.getUserId = (req, res, next) => { // получаем польз�
         next(new UndefinedError(`Пользователь по указанному ${req.params._id} не найден.`));
       }
 
-      return res.send({ data: user });
+      return res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+          _id: user._id,
+        },
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

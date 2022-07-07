@@ -4,14 +4,15 @@ const UndefinedError = require('../errors/UndefinedError');
 const DefaultError = require('../errors/DefaultError');
 
 module.exports.likeCard = (req, res, next) => {
+  console.log(req.params);
   Card.findByIdAndUpdate(
-    req.params._id,
+    req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
     .then((card) => {
       if (card == null) {
-        next(new IncorrectError(`Передан несуществующий ${req.params._id} карточки.`));
+        next(new IncorrectError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
 
       return res.send({ data: card });
