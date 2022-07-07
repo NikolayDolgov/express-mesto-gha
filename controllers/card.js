@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const IncorrectError = require('../errors/IncorrectError');
 const UndefinedError = require('../errors/UndefinedError');
 const DefaultError = require('../errors/DefaultError');
+const NoAccessError = require('../errors/NoAccessError');
 
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -69,6 +70,9 @@ module.exports.deleteCard = (req, res, next) => { // удаляем карточ
     .then((card) => {
       if (card == null) {
         next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
+      }
+      if (card.owner !== req.user._id) {
+        next(new NoAccessError('У Вас нет доступа для удаления дааной карточки.'));
       }
 
       return res.send({ data: card });

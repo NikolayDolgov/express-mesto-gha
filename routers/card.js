@@ -25,6 +25,11 @@ router.post('/cards', celebrate({
     link: Joi.string().pattern(regex).required(),
   }),
 }), postCard);
-router.delete('/cards/:cardId', deleteCard);
+
+router.delete('/cards/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), deleteCard);
 
 module.exports = router;
