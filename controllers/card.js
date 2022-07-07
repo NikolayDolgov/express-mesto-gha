@@ -72,7 +72,7 @@ module.exports.deleteCard = (req, res, next) => { // удаляем карточ
   Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        return next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
+        throw new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`);
       }
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(req.params.cardId)
