@@ -66,22 +66,23 @@ module.exports.postCard = (req, res, next) => { // добавляем карто
 };
 
 module.exports.deleteCard = (req, res, next) => { // удаляем карточку
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
+        throw next(new UndefinedError(`Передан несуществующий ${req.params.cardId} карточки.`));
       }
-      if (card.owner !== req.user._id) {
-        next(new NoAccessError('У Вас нет доступа для удаления дааной карточки.'));
+      if (card.owner.toString() === req.user._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((newCard) => res.send({ data: newCard }))
+          .catch(next);
+      } else {
+        throw next(new NoAccessError('У Вас нет доступа для удаления данной карточки.'));
       }
-
-      return res.send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .catch((/* err */) => {
+      /* if (err.name === 'CastError') {
         next(new IncorrectError(`Карточка с указанным ${req.params.cardId} не найдена.`));
-      }
-
+      } */
       next(new DefaultError());
     });
 };
