@@ -6,9 +6,7 @@ const usersRouter = require('./routers/user'); // импорт роутера п
 const cardsRouter = require('./routers/card'); // импорт роутера карточек
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
-
-// eslint-disable-next-line no-useless-escape
-const regex = /http[s]?:\/\/[w{3}]?[a-zA-Z0-9-]+\.[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]+#?/;
+const { regex } = require('./utils/utils');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -18,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 
 // подключаем роуты
-app.get('/signin', celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
