@@ -32,15 +32,15 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' }); // тесты не пропускают 404 / 401
-});
-
 // авторизация
 app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
+
+app.use((req, res) => {
+  res.status(404).send({ message: 'Страница не найдена' }); // тесты не пропускают 404 / 401
+});
 
 app.use(errors()); // обработчик ошибок celebrate
 
