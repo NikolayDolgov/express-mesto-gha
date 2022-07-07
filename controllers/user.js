@@ -10,7 +10,7 @@ const DefaultError = require('../errors/DefaultError');
 module.exports.getUserAll = (req, res, next) => { // получаем пользователей
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch(next(new DefaultError()));
+    .catch(next);
 };
 
 module.exports.getUser = (req, res, next) => { // получаем пользователя // доделать
