@@ -28,10 +28,10 @@ module.exports.getUser = (req, res, next) => { // получаем пользо�
 };
 
 module.exports.getUserId = (req, res, next) => { // получаем пользователя
-  User.findById(req.params._id)
+  User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        next(new UndefinedError(`Пользователь по указанному ${req.params._id} не найден.`));
+        next(new UndefinedError(`Пользователь по указанному ${req.params.userId} не найден.`));
       }
 
       return res.send({
