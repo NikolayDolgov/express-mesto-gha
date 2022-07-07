@@ -35,13 +35,7 @@ module.exports.getUserId = (req, res, next) => { // получаем польз�
       }
 
       return res.send({
-        data: {
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email: user.email,
-          _id: user._id,
-        },
+        data: user,
       });
     })
     .catch((err) => {

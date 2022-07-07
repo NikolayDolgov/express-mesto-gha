@@ -48,7 +48,7 @@ module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
 module.exports.getCard = (req, res, next) => { // получаем карточки
   Card.find({})
     .then((card) => res.send({ data: card }))
-    .catch(next(new DefaultError()));
+    .catch(next);
 };
 
 module.exports.postCard = (req, res, next) => { // добавляем карточку
