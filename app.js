@@ -8,6 +8,7 @@ const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const { regex } = require('./utils/utils');
 const UndefinedError = require('./errors/UndefinedError');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -15,6 +16,8 @@ const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
+
+app.use(requestLogger); // подключаем логгер запросов
 
 // подключаем роуты
 app.post('/signin', celebrate({
@@ -39,6 +42,8 @@ app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use((req, res, next) => {
   next(new UndefinedError('Страница не найдена'));
